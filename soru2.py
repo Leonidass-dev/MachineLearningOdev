@@ -19,7 +19,7 @@ data, sr = librosa.load(dosya_yolu, sr=None)
 # Grafiği çizdirme
 plt.figure(figsize=(14, 5))
 librosa.display.waveshow(y=data, sr=sr, x_axis='time')
-plt.title(f'Zaman-Genlik Grafiği (Waveform) - Örnek Dosya (Sınıf: Air Conditioner)')
+plt.title(f'Zaman-Genlik Grafiği (Waveform) - Örnek Dosya')
 plt.xlabel('Zaman (Saniye)')
 plt.ylabel('Genlik (Amplitude)')
 plt.grid(True)
