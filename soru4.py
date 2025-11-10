@@ -93,7 +93,7 @@ print("-" * 50)
 # 4. RANDOM FOREST EĞİTİMİ VE TAHMİN
 # ----------------------------------------------------------------------
 print("4. Adım: Random Forest Modeli Eğitiliyor (n_estimators=100)...")
-# n_jobs=-1, tüm işlemci çekirdeklerini kullanmayı dener (hız için)
+# n_jobs=-1, tüm işlemci çekirdeklerini kullanmayı dener.
 rf_model = RandomForestClassifier(n_estimators=100, random_state=RANDOM_STATE, n_jobs=-1)
 rf_model.fit(X_train, y_train)
 print("Eğitim Tamamlandı.")
@@ -121,19 +121,8 @@ accuracy = rf_model.score(X_test, y_test)
 print(f"\nModel Doğruluğu (Accuracy): {accuracy:.4f}")
 print("-" * 50)
 
-# YORUMLAMA
-print("--- SONUÇLARIN KISA YORUMU ---")
 print(f"Model, Ham Ses Verisi ({X.shape[1]} boyutlu vektörler) ile eğitilmiştir.")
 print(f"Elde edilen doğruluk: {accuracy:.4f}")
-print("""
-Ham verinin kullanılması ve yüksek boyutluluğu (her bir örnek bir özellik) nedeniyle,
-performansın genellikle beklenen özellik çıkarımı yapılmış modellere göre düşük olması olasıdır.
-
-Random Forest, gürültülü ve yüksek boyutlu verilerle başa çıkabilse de, ham ses verisindeki
-küçük zaman kaymaları (ses olayının başlangıç zamanı) veya sinyal varyasyonları modelin
-başarısını olumsuz etkiler. Bu sonuçlar, ses sınıflandırması için MFCC gibi frekans bazlı
-özellik çıkarımının ne kadar kritik olduğunu gösterir.
-""")
 
 # Bitiş zamanını kaydetme
 end_time = time.time()
