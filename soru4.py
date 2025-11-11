@@ -55,8 +55,7 @@ for index, row in tqdm(metadata.iterrows(), total=toplam_dosya_sayisi, desc='Dos
         if len(data) > max_len:
             max_len = len(data)
     except Exception as e:
-        # Hata durumunda (Örn: dosya yolu hatası) atlanacak
-        # Hataları gizlemek için (errors=False) kullanılabilir, ancak loglamak daha iyidir.
+        # Hata durumunda atlanacak
         continue  # Hatalı dosyayı atla
 
 print(f"\nToplam başarılı dosya sayısı: {len(raw_data_list)}")
