@@ -18,24 +18,23 @@ ses_dosyalari = {
 veri_seti = {}
 for etiket, yol in ses_dosyalari.items():
     try:
-        # sr=44100 olarak sabitleme veya sr=None kullanma tercih edilebilir.
-        y, sr = librosa.load(yol, sr=44100)
-        veri_seti[etiket] = {'y': y, 'sr': sr}
-        print(f"✅ {etiket} dosyası başarıyla yüklendi.")
+        data, sr = librosa.load(yol, sr=44100)
+        veri_seti[etiket] = {'y': data, 'sr': sr}
+        print(f"{etiket} dosyası başarıyla yüklendi.")
     except Exception as e:
-        print(f"❌ HATA: {etiket} dosyası yüklenemedi. Yol: {yol}. Hata: {e}")
+        print(f"HATA: {etiket} dosyası yüklenemedi. Yol: {yol}. Hata: {e}")
         veri_seti[etiket] = None # Hata durumunda boş bırak
 
 for etiket, veri in veri_seti.items():
     if veri is None:
         continue # Yüklenemeyen dosyayı atla
 
-    y = veri['y']
+    data = veri['y']
     sr = veri['sr']
 
     # 1. STFT (Spektrogram) hesaplama
     # D: Kısa Zamanlı Fourier Dönüşümü (Short-Time Fourier Transform)
-    D = librosa.stft(y)
+    D = librosa.stft(data)
     # S_db: Ses enerjisinin daha iyi gözlemlenmesi için genliği dB (desibel) ölçeğine dönüştürme
     S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
 
@@ -57,5 +56,5 @@ for etiket, veri in veri_seti.items():
 
     # 3. Ses dosyasını çalma kodu
     print(f"\n--- Ses: {etiket} (Oynatıcı) ---")
-    display(Audio(data=y, rate=sr)) # Colab/Jupyter'da ses oynatma
+    display(Audio(data=data, rate=sr)) # Colab/Jupyter'da ses oynatma
     print("="*40) # Ayırıcı
