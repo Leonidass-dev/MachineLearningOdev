@@ -26,7 +26,7 @@ if not os.path.exists(FEATURE_CSV):
     meta = pd.read_csv(META_CSV)
     features, labels = [], []
 
-    print(f"🎧 Toplam {len(meta)} dosya işlenecek...\n")
+    print(f"Toplam {len(meta)} dosya işlenecek...\n")
     for idx, row in meta.iterrows():
         file_path = os.path.join(AUDIO_PATH, f"fold{row['fold']}", row['slice_file_name'])
         if not os.path.exists(file_path):
@@ -40,14 +40,14 @@ if not os.path.exists(FEATURE_CSV):
         labels.append(row["class"])
 
         percent = (idx + 1) / len(meta) * 100
-        print(f"\r🔄 Özellik çıkarımı: %{percent:.1f}", end="")
+        print(f"\rÖzellik çıkarımı: %{percent:.1f}", end="")
 
-    print("\n✅ Özellik çıkarımı tamamlandı. CSV kaydediliyor...")
+    print("\nÖzellik çıkarımı tamamlandı. CSV kaydediliyor...")
     df = pd.DataFrame(features, columns=[f"mel_{i}" for i in range(len(features[0]))])
     df["label"] = labels
     df.to_csv(FEATURE_CSV, index=False)
 else:
-    print("📂 Özellik dosyası bulundu, doğrudan yükleniyor...")
+    print("Özellik dosyası bulundu, doğrudan yükleniyor...")
     df = pd.read_csv(FEATURE_CSV)
 
 # ======================================================
@@ -133,7 +133,7 @@ class DecisionTree:
         return np.array([self.predict_one(x) for x in X])
 
 class RandomForest:
-    def __init__(self, n_trees=20, max_depth=10, n_features=None):  # 🌲 50 ağaç
+    def __init__(self, n_trees=50, max_depth=10, n_features=None):  
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.n_features = n_features
@@ -149,8 +149,8 @@ class RandomForest:
             tree.train(X_sample, y_sample)
             self.trees.append(tree)
             percent = (i + 1) / self.n_trees * 100
-            print(f"\r🌲 Ağaç {i+1}/{self.n_trees} eğitiliyor... %{percent:.1f}", end="")
-        print("\n✅ Random Forest eğitimi tamamlandı.\n")
+            print(f"\rAğaç {i+1}/{self.n_trees} eğitiliyor... %{percent:.1f}", end="")
+        print("\nRandom Forest eğitimi tamamlandı.\n")
 
     def predict(self, X):
         tree_preds = np.array([tree.predict(X) for tree in self.trees])
@@ -166,13 +166,13 @@ class RandomForest:
 start_global = time.time()
 rf = RandomForest(n_trees=N_TREES, max_depth=MAX_DEPTH, n_features=64)
 rf.fit(X_train, y_train)
-print(f"⏱ Eğitim süresi: {(time.time()-start_global):.2f} sn\n")
+print(f"Eğitim süresi: {(time.time()-start_global):.2f} sn\n")
 
 # ======================================================
 # 6. Test ve Değerlendirme
 # ======================================================
 y_pred = rf.predict(X_test)
-print("📊 Sonuçlar:\n")
+print("Sonuçlar:\n")
 print("Accuracy :", accuracy_score(y_test, y_pred))
 print("Precision:", precision_score(y_test, y_pred, average='macro'))
 print("Recall   :", recall_score(y_test, y_pred, average='macro'))
