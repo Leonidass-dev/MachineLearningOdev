@@ -2,6 +2,8 @@ import os, time, numpy as np, pandas as pd, librosa
 from collections import Counter
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # ======================================================
 # 1. Veri yolları ve ayarlar
@@ -12,7 +14,7 @@ AUDIO_PATH = os.path.join(BASE_PATH, "")
 
 SAMPLE_RATE = 22050
 N_MELS = 128
-N_TREES = 50
+N_TREES = 20
 MAX_DEPTH = 10
 TEST_SIZE = 0.2
 rng = np.random.default_rng(42)
@@ -33,7 +35,7 @@ if not os.path.exists(FEATURE_CSV):
             continue
 
         y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
-        mels = librosa.feature.melspectrogram(y=y, sr=sr)
+        mels = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=N_MELS)
         mels_mean = np.mean(mels, axis=1)
 
         features.append(mels_mean)
@@ -133,7 +135,7 @@ class DecisionTree:
         return np.array([self.predict_one(x) for x in X])
 
 class RandomForest:
-    def __init__(self, n_trees=50, max_depth=10, n_features=None):  
+    def __init__(self, n_trees=20, max_depth=10, n_features=None):
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.n_features = n_features
@@ -178,3 +180,29 @@ print("Precision:", precision_score(y_test, y_pred, average='macro'))
 print("Recall   :", recall_score(y_test, y_pred, average='macro'))
 print("\nKarmaşıklık Matrisi:\n", confusion_matrix(y_test, y_pred))
 print("\nSınıflandırma Raporu:\n", classification_report(y_test, y_pred))
+# ======================================================
+# 7. Görselleştirilmiş Karışıklık Analizi (Yeni Bölüm)
+# ======================================================
+print("\nSınıfların Karışma Analizi (Karmaşıklık Matrisi Grafiği):\n")
+
+# 1. Karmaşıklık Matrisini Hesapla
+cm = confusion_matrix(y_test, y_pred)
+
+# 2. Sınıf İsimlerini Al
+class_names = np.unique(y) # Tüm veri setindeki benzersiz sınıf isimleri
+
+# 3. Grafik Çizimi
+plt.figure(figsize=(10, 8))
+sns.heatmap(
+    cm,
+    annot=True,              # Sayı değerlerini hücrelere yaz
+    fmt='d',                 # Sayıları ondalık değil, tam sayı (digit) olarak göster
+    cmap='Blues',            # Mavi renk skalası kullan
+    xticklabels=class_names, # X ekseni etiketleri (Tahmin edilen sınıflar)
+    yticklabels=class_names  # Y ekseni etiketleri (Gerçek sınıflar)
+)
+
+plt.title('Random Forest Karmaşıklık Matrisi')
+plt.ylabel('Gerçek Sınıf (True Label)')
+plt.xlabel('Tahmin Edilen Sınıf (Predicted Label)')
+plt.show()
