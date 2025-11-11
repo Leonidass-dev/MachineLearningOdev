@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Makine Öğrenmesi - Soru 6
-Random Forest (from scratch) ile Ses Sınıflandırması
-UrbanSound8K dataset kullanımı
-Mel-Spektrogram öznitelikleri (ortalama alınarak)
-"""
 import os, time, numpy as np, pandas as pd, librosa
 from collections import Counter
 from sklearn.model_selection import train_test_split
@@ -19,7 +12,7 @@ AUDIO_PATH = os.path.join(BASE_PATH, "")
 
 SAMPLE_RATE = 22050
 N_MELS = 128
-N_TREES = 50     # 🌲 50 ağaç
+N_TREES = 50
 MAX_DEPTH = 10
 TEST_SIZE = 0.2
 rng = np.random.default_rng(42)
@@ -27,7 +20,7 @@ rng = np.random.default_rng(42)
 FEATURE_CSV = "mel_features_rf.csv"
 
 # ======================================================
-# 2. Özellik çıkarımı (ödev metnindeki formüle birebir uygun)
+# 2. Özellik çıkarımı
 # ======================================================
 if not os.path.exists(FEATURE_CSV):
     meta = pd.read_csv(META_CSV)
@@ -39,7 +32,6 @@ if not os.path.exists(FEATURE_CSV):
         if not os.path.exists(file_path):
             continue
 
-        # 🔹 Ödevdeki formül: mels = np.mean(librosa.feature.melspectrogram(y=data, sr=sr), axis=1)
         y, sr = librosa.load(file_path, sr=SAMPLE_RATE)
         mels = librosa.feature.melspectrogram(y=y, sr=sr)
         mels_mean = np.mean(mels, axis=1)
@@ -141,7 +133,7 @@ class DecisionTree:
         return np.array([self.predict_one(x) for x in X])
 
 class RandomForest:
-    def __init__(self, n_trees=50, max_depth=10, n_features=None):  # 🌲 50 ağaç
+    def __init__(self, n_trees=20, max_depth=10, n_features=None):  # 🌲 50 ağaç
         self.n_trees = n_trees
         self.max_depth = max_depth
         self.n_features = n_features
